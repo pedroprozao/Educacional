@@ -1,136 +1,458 @@
 /* ==========================================================================
-   TORNADO NA ESCOLA - Motor 3D em Canvas Puro, Áudio Sintetizado e Lógica
+   TORNADO NA ESCOLA - Motor 3D Reativo às Escolhas, Áudio e Lógica
    Autor: Pedro (9º B - Escola Vicente Rijo)
    ========================================================================== */
 
+// Cada opção agora define uma ação visual 3D (destinoX, destinoZ, postura e alerta)
 const RODADAS = [
   {
     cena: "andando",
-    legenda: "Vista 3D: A sirene toca enquanto o funil do tornado gira perto da escola.",
+    alvoX: -20,
+    alvoZ: 295,
+    legenda: "Vista 3D: A sirene toca! Decida para onde os personagens devem ir.",
     historia: "Você está na sala de aula do 9º B quando o vento bate forte nos vidros e a sirene de emergência da escola dispara.",
     historiaDificil: "O vento ruge forte lá fora e a sirene toca sem parar! As janelas vibram com a pressão do ar.",
     pergunta: "O que fazer primeiro?",
     opcoes: [
-      { texto: "Ficar longe da janela e ir para um local interno sem vidros.", ideal: true },
-      { texto: "Juntar carteiras do lado da janela e entrar embaixo.", ideal: false },
-      { texto: "Correr até a janela para filmar a formação do tornado.", ideal: false }
+      {
+        texto: "Ficar longe da janela e ir para um local interno sem vidros.",
+        ideal: true,
+        acao3D: {
+          postura: "correndo",
+          alvoX: -195,
+          alvoZ: 360,
+          avancoTornado: 0,
+          legenda: "Vista 3D: A turma corre para dentro do corredor interno protegido!"
+        }
+      },
+      {
+        texto: "Juntar carteiras do lado da janela e entrar embaixo.",
+        ideal: false,
+        acao3D: {
+          postura: "agachado",
+          alvoX: -255,
+          alvoZ: 335,
+          avancoTornado: 45,
+          legenda: "Vista 3D: Perigo! Eles agacharam encostados nas janelas de vidro!"
+        }
+      },
+      {
+        texto: "Correr até a janela para filmar a formação do tornado.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -135,
+          alvoZ: 332,
+          avancoTornado: 55,
+          legenda: "Vista 3D: Perigo! Ficaram expostos na janela enquanto o tornado se aproxima!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Afaste-se imediatamente de janelas e vidros, pois podem estilhaçar. Procure um corredor ou sala interna."
   },
   {
     cena: "correndo",
-    legenda: "Vista 3D: Os personagens correm para o corredor interno do térreo.",
+    alvoX: -195,
+    alvoZ: 360,
+    legenda: "Vista 3D: No corredor interno do térreo, onde se abrigar?",
     historia: "Vocês chegaram ao corredor interno do térreo, longe das janelas externas. O barulho do vento fica cada vez mais alto.",
     historiaDificil: "O prédio treme com as rajadas! Poeira e folhas giram ao redor da escola.",
     pergunta: "Onde se proteger agora?",
     opcoes: [
-      { texto: "Subir para o último andar para ficar longe do chão.", ideal: false },
-      { texto: "Embaixo de uma mesa ou estrutura resistente no andar mais baixo.", ideal: true },
-      { texto: "Ficar em pé encostado na porta de vidro da entrada.", ideal: false }
+      {
+        texto: "Subir para o último andar para ficar longe do chão.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -185,
+          alvoZ: 350,
+          subirAndar: true,
+          avancoTornado: 50,
+          legenda: "Vista 3D: Perigo! Subiram para o topo do prédio onde o vento é mais forte!"
+        }
+      },
+      {
+        texto: "Embaixo de uma mesa ou estrutura resistente no andar mais baixo.",
+        ideal: true,
+        acao3D: {
+          postura: "agachado",
+          alvoX: -195,
+          alvoZ: 375,
+          avancoTornado: 0,
+          legenda: "Vista 3D: Ótimo! Todos protegidos embaixo de estrutura resistente no térreo!"
+        }
+      },
+      {
+        texto: "Ficar em pé encostado na porta de vidro da entrada.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -198,
+          alvoZ: 330,
+          avancoTornado: 45,
+          legenda: "Vista 3D: Risco! Ficaram em pé bem na porta de vidro da entrada!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Vá para o andar mais baixo da escola e proteja a cabeça e o pescoço embaixo de algo resistente."
   },
   {
     cena: "tremendo",
-    legenda: "Vista 3D: Vento intenso levanta destroços ao redor do pátio.",
+    alvoX: -195,
+    alvoZ: 365,
+    legenda: "Vista 3D: Um colega ameaça correr para o pátio aberto!",
     historia: "No meio do caminho, um colega entra em pânico e diz que vai correr para o pátio aberto para tentar ir embora.",
     historiaDificil: "Um colega grita assustado e tenta abrir a porta que dá direto para o pátio descoberto!",
     pergunta: "O que fazer nessa situação?",
     opcoes: [
-      { texto: "Chamar o colega para o local seguro interno com o grupo.", ideal: true },
-      { texto: "Sair correndo atrás dele para o meio do pátio.", ideal: false },
-      { texto: "Abrir todas as portas da escola para o vento passar.", ideal: false }
+      {
+        texto: "Chamar o colega para o local seguro interno com o grupo.",
+        ideal: true,
+        acao3D: {
+          postura: "agachado",
+          alvoX: -195,
+          alvoZ: 375,
+          avancoTornado: 0,
+          legenda: "Vista 3D: O grupo puxa o colega para dentro do abrigo seguro!"
+        }
+      },
+      {
+        texto: "Sair correndo atrás dele para o meio do pátio.",
+        ideal: false,
+        acao3D: {
+          postura: "correndo",
+          alvoX: 60,
+          alvoZ: 310,
+          avancoTornado: 65,
+          legenda: "Vista 3D: Perigo! Correram para o pátio aberto na direção do tornado!"
+        }
+      },
+      {
+        texto: "Abrir todas as portas da escola para o vento passar.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -160,
+          alvoZ: 330,
+          avancoTornado: 50,
+          legenda: "Vista 3D: Erro! Abrir portas expõe o interior às rajadas e destroços!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Nunca vá para áreas abertas ou tente fugir durante o tornado. Chame o colega para o abrigo interno."
   },
   {
     cena: "tremendo",
-    legenda: "Vista 3D: Relâmpagos iluminam o céu escuro acima da escola.",
+    alvoX: -195,
+    alvoZ: 370,
+    legenda: "Vista 3D: Estrondo de vidros quebrando ecoa pelo prédio!",
     historia: "De repente, vocês ouvem o som alto de vidros quebrando em uma sala próxima onde ninguém estava.",
     historiaDificil: "Vidros estilhaçam no corredor vizinho! O som é ensurdecedor e alguns alunos se assustam.",
     pergunta: "Qual é a atitude mais segura?",
     opcoes: [
-      { texto: "Sair do abrigo para olhar o que quebrou na outra sala.", ideal: false },
-      { texto: "Correr para perto das janelas para ver se o tornado já foi.", ideal: false },
-      { texto: "Manter-se protegido, esperar o barulho diminuir e verificar com cuidado.", ideal: true }
+      {
+        texto: "Sair do abrigo para olhar o que quebrou na outra sala.",
+        ideal: false,
+        acao3D: {
+          postura: "andando",
+          alvoX: -120,
+          alvoZ: 335,
+          avancoTornado: 45,
+          legenda: "Vista 3D: Risco! Saíram do abrigo e se aproximaram dos estilhaços!"
+        }
+      },
+      {
+        texto: "Correr para perto das janelas para ver se o tornado já foi.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -255,
+          alvoZ: 332,
+          avancoTornado: 55,
+          legenda: "Vista 3D: Perigo! Foram olhar pela janela enquanto o vórtice ainda gira!"
+        }
+      },
+      {
+        texto: "Manter-se protegido, esperar o barulho diminuir e verificar com cuidado.",
+        ideal: true,
+        acao3D: {
+          postura: "agachado",
+          alvoX: -195,
+          alvoZ: 380,
+          avancoTornado: 0,
+          legenda: "Vista 3D: Todos permanecem abaixados e protegidos longe dos vidros!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Permaneça protegido e longe de estilhaços até o perigo diminuir, verificando o ambiente com cautela."
   },
   {
     cena: "tremendo",
-    legenda: "Vista 3D: O vórtice oscila perto do prédio enquanto o alerta continua.",
+    alvoX: -195,
+    alvoZ: 375,
+    legenda: "Vista 3D: O vento diminui por segundos, mas a sirene continua!",
     historia: "Por alguns segundos, o barulho do vento diminui um pouco, mas a sirene de alerta da escola continua tocando.",
     historiaDificil: "Uma calmaria repentina acontece, mas o céu continua escuro e a sirene não desligou!",
     pergunta: "O que fazer nesse momento?",
     opcoes: [
-      { texto: "Voltar correndo para a sala de aula para pegar a mochila.", ideal: false },
-      { texto: "Continuar no local seguro e esperar orientação oficial.", ideal: true },
-      { texto: "Sair para o pátio para comemorar que passou.", ideal: false }
+      {
+        texto: "Voltar correndo para a sala de aula para pegar a mochila.",
+        ideal: false,
+        acao3D: {
+          postura: "correndo",
+          alvoX: -135,
+          alvoZ: 340,
+          avancoTornado: 50,
+          legenda: "Vista 3D: Perigo! Voltaram para perto das janelas da sala antes do fim do alerta!"
+        }
+      },
+      {
+        texto: "Continuar no local seguro e esperar orientação oficial.",
+        ideal: true,
+        acao3D: {
+          postura: "agachado",
+          alvoX: -195,
+          alvoZ: 380,
+          avancoTornado: 0,
+          legenda: "Vista 3D: Decisão firme! O grupo mantém a proteção até o sinal oficial!"
+        }
+      },
+      {
+        texto: "Sair para o pátio para comemorar que passou.",
+        ideal: false,
+        acao3D: {
+          postura: "andando",
+          alvoX: 40,
+          alvoZ: 280,
+          avancoTornado: 65,
+          legenda: "Vista 3D: Alerta! Saíram para o pátio aberto com o tornado ainda próximo!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Uma pausa no vento pode ser apenas uma mudança na trajetória da tempestade. Só saia após o fim oficial do alerta."
   },
   {
     cena: "andando",
-    legenda: "Vista 3D: A professora reúne os alunos em posição de proteção.",
+    alvoX: -195,
+    alvoZ: 370,
+    legenda: "Vista 3D: A professora pede para reforçar a regra de proteção!",
     historia: "A professora pede para você ajudar a acalmar os colegas e lembrar a regra principal de proteção da Defesa Civil.",
     historiaDificil: "Com o barulho lá fora, a professora pede que você repita rápido a regra de ouro para a turma!",
     pergunta: "Qual é a melhor lembrança para passar aos colegas?",
     opcoes: [
-      { texto: "Longe de janelas, local interno sem vidros e embaixo de algo resistente.", ideal: true },
-      { texto: "Juntar carteiras perto das janelas para segurar o vento.", ideal: false },
-      { texto: "Ficar perto das portas de saída para correr se precisar.", ideal: false }
+      {
+        texto: "Longe de janelas, local interno sem vidros e embaixo de algo resistente.",
+        ideal: true,
+        acao3D: {
+          postura: "agachado",
+          alvoX: -195,
+          alvoZ: 380,
+          avancoTornado: 0,
+          legenda: "Vista 3D: Toda a turma se abaixa protegendo a cabeça no corredor interno!"
+        }
+      },
+      {
+        texto: "Juntar carteiras perto das janelas para segurar o vento.",
+        ideal: false,
+        acao3D: {
+          postura: "agachado",
+          alvoX: -255,
+          alvoZ: 335,
+          avancoTornado: 50,
+          legenda: "Vista 3D: Perigo! Juntar carteiras perto da janela expõe todos aos vidros!"
+        }
+      },
+      {
+        texto: "Ficar perto das portas de saída para correr se precisar.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -198,
+          alvoZ: 330,
+          avancoTornado: 45,
+          legenda: "Vista 3D: Risco! Ficar na porta de saída deixa o grupo vulnerável!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: A regra básica é sempre: longe de janelas, em cômodo interno no andar mais baixo e protegido sob algo resistente."
   },
   {
     cena: "andando",
-    legenda: "Vista 3D: Simulação de evacuação interna organizada na escola.",
+    alvoX: -40,
+    alvoZ: 295,
+    legenda: "Vista 3D: Treino preventivo de emergência na Escola Vicente Rijo!",
     historia: "Agora pense em um treino de emergência preventivo na Escola Vicente Rijo antes mesmo da tempestade chegar.",
     historiaDificil: "O alarme de treino preventivo dispara durante a aula de Robótica!",
     pergunta: "Qual deve ser o primeiro passo da turma?",
     opcoes: [
-      { texto: "Correr empurrando os colegas para chegar primeiro.", ideal: false },
-      { texto: "Guardar todos os cadernos e materiais antes de levantar.", ideal: false },
-      { texto: "Seguir em silêncio e em ordem para o ponto seguro interno.", ideal: true }
+      {
+        texto: "Correr empurrando os colegas para chegar primeiro.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -120,
+          alvoZ: 320,
+          avancoTornado: 35,
+          legenda: "Vista 3D: Tumulto na entrada! Empurrar causa quedas e atrasa o grupo!"
+        }
+      },
+      {
+        texto: "Guardar todos os cadernos e materiais antes de levantar.",
+        ideal: false,
+        acao3D: {
+          postura: "andando",
+          alvoX: -40,
+          alvoZ: 295,
+          avancoTornado: 45,
+          legenda: "Vista 3D: Demora! Ficaram parados arrumando material enquanto o tempo passa!"
+        }
+      },
+      {
+        texto: "Seguir em silêncio e em ordem para o ponto seguro interno.",
+        ideal: true,
+        acao3D: {
+          postura: "andando",
+          alvoX: -195,
+          alvoZ: 365,
+          avancoTornado: 0,
+          legenda: "Vista 3D: Deslocamento rápido, organizado e em silêncio até o abrigo!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Em treinos ou emergências reais, deslocar-se em ordem e silêncio evita acidentes e permite ouvir instruções."
   },
   {
     cena: "correndo",
-    legenda: "Vista 3D: Resgate rápido e calmo de um aluno próximo à entrada.",
+    alvoX: -90,
+    alvoZ: 310,
+    legenda: "Vista 3D: Um aluno mais novo está chorando perto da entrada!",
     historia: "Perto da entrada do corredor seguro, você vê um aluno mais novo chorando e paralisado de medo perto de uma área exposta.",
     historiaDificil: "Um aluno menor está chorando perto de uma porta com vidro enquanto o vento volta a soprar forte!",
     pergunta: "O que fazer para ajudar?",
     opcoes: [
-      { texto: "Levar o aluno para o local seguro com calma.", ideal: true },
-      { texto: "Deixar ele lá e avisar só quando a tempestade acabar.", ideal: false },
-      { texto: "Mandar ele correr sozinho para o pátio aberto.", ideal: false }
+      {
+        texto: "Levar o aluno para o local seguro com calma.",
+        ideal: true,
+        acao3D: {
+          postura: "correndo",
+          alvoX: -195,
+          alvoZ: 375,
+          avancoTornado: 0,
+          legenda: "Vista 3D: Resgate seguro! Todos entram juntos no corredor protegido!"
+        }
+      },
+      {
+        texto: "Deixar ele lá e avisar só quando a tempestade acabar.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -195,
+          alvoZ: 375,
+          avancoTornado: 45,
+          legenda: "Vista 3D: Risco! O colega ficou sozinho perto da área exposta!"
+        }
+      },
+      {
+        texto: "Mandar ele correr sozinho para o pátio aberto.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: 50,
+          alvoZ: 290,
+          avancoTornado: 65,
+          legenda: "Vista 3D: Perigo grave! Nunca mande ninguém para áreas abertas!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Ajudar com calma quem está em área de risco a ir para o abrigo interno salva vidas sem expor o grupo."
   },
   {
     cena: "andando",
-    legenda: "Vista 3D: O tornado se afasta no horizonte e a chuva diminui.",
+    alvoX: -195,
+    alvoZ: 365,
+    legenda: "Vista 3D: O tornado se afasta e a sirene finalmente para!",
     historia: "O tornado finalmente se afastou da região, o vento cessou e a sirene de emergência foi desligada.",
     historiaDificil: "O silêncio volta após a tempestade, mas pode haver fios caídos ou vidros quebrados na escola.",
     pergunta: "Qual é a atitude mais segura agora?",
     opcoes: [
-      { texto: "Sair correndo sozinho para explorar os estragos lá fora.", ideal: false },
-      { texto: "Esperar orientação dos adultos e verificar o local com cuidado, em grupo.", ideal: true },
-      { texto: "Mexer em fios elétricos soltos no corredor.", ideal: false }
+      {
+        texto: "Sair correndo sozinho para explorar os estragos lá fora.",
+        ideal: false,
+        acao3D: {
+          postura: "correndo",
+          alvoX: 80,
+          alvoZ: 270,
+          avancoTornado: 30,
+          legenda: "Vista 3D: Cuidado! Correr sozinho lá fora pode levar a fios caídos e vidros!"
+        }
+      },
+      {
+        texto: "Esperar orientação dos adultos e verificar o local com cuidado, em grupo.",
+        ideal: true,
+        acao3D: {
+          postura: "andando",
+          alvoX: -65,
+          alvoZ: 305,
+          avancoTornado: -90,
+          legenda: "Vista 3D: Saída organizada em grupo após liberação oficial!"
+        }
+      },
+      {
+        texto: "Mexer em fios elétricos soltos no corredor.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -140,
+          alvoZ: 335,
+          avancoTornado: 30,
+          legenda: "Vista 3D: Perigo de choque! Nunca toque em fios caídos após tempestades!"
+        }
+      }
     ],
     explicacao: "Orientação da Defesa Civil: Após o tornado, aguarde a liberação dos responsáveis, fique em grupo e nunca toque em fios ou estruturas danificadas."
   },
   {
     cena: "andando",
-    legenda: "Vista 3D: Escola Vicente Rijo segura após a passagem da tempestade.",
+    alvoX: -45,
+    alvoZ: 295,
+    legenda: "Vista 3D: Último desafio para proteger toda a Escola Vicente Rijo!",
     historia: "Com todos seguros na Escola Vicente Rijo, a direção pede uma mensagem curta para ensinar os outros alunos a se protegerem.",
     historiaDificil: "Último desafio! Escolha a mensagem oficial para o cartaz de segurança da escola:",
     pergunta: "Qual mensagem resume melhor a proteção contra tornados?",
     opcoes: [
-      { texto: "Junte carteiras ao lado da janela e fique olhando o céu.", ideal: false },
-      { texto: "Corra para o pátio aberto assim que ouvir a sirene.", ideal: false },
-      { texto: "Fique longe de janelas, vá para local interno sem vidros e proteja-se embaixo de algo resistente.", ideal: true }
+      {
+        texto: "Junte carteiras ao lado da janela e fique olhando o céu.",
+        ideal: false,
+        acao3D: {
+          postura: "tremendo",
+          alvoX: -255,
+          alvoZ: 335,
+          avancoTornado: 40,
+          legenda: "Vista 3D: Cartaz incorreto! Ficar perto de janelas é perigoso!"
+        }
+      },
+      {
+        texto: "Corra para o pátio aberto assim que ouvir a sirene.",
+        ideal: false,
+        acao3D: {
+          postura: "correndo",
+          alvoX: 60,
+          alvoZ: 280,
+          avancoTornado: 50,
+          legenda: "Vista 3D: Cartaz incorreto! O pátio aberto não oferece proteção!"
+        }
+      },
+      {
+        texto: "Fique longe de janelas, vá para local interno sem vidros e proteja-se embaixo de algo resistente.",
+        ideal: true,
+        acao3D: {
+          postura: "andando",
+          alvoX: -25,
+          alvoZ: 285,
+          avancoTornado: -140,
+          legenda: "Vista 3D: Mensagem oficial aprovada! Escola Vicente Rijo protegida!"
+        }
+      }
     ],
     explicacao: "Parabéns! Essa é exatamente a recomendação oficial da Defesa Civil para escolas durante tornados."
   }
@@ -177,15 +499,27 @@ let somAtivo = true;
 let audioCtx = null;
 
 /* ==========================================================================
-   MOTOR GRÁFICO 3D (Projeção em Perspectiva Pura em Canvas 2D)
+   MOTOR GRÁFICO 3D INTERATIVO (Reage à escolha do jogador em tempo real)
    ========================================================================== */
 let larguraTela = window.innerWidth;
 let alturaTela = window.innerHeight;
 let tempoAnimacao = 0;
-let estadoAnimacaoPersonagens = "andando";
 let intensidadeRelampago = 0;
 
-// Partículas 3D de chuva e destroços voando no tornado
+// Estado dinâmico 3D controlado pelas rodadas e escolhas
+const estado3D = {
+  grupoX: -20,
+  grupoZ: 295,
+  grupoY: -60,
+  destinoX: -20,
+  destinoZ: 295,
+  destinoY: -60,
+  postura: "andando", // "andando", "correndo", "tremendo", "agachado"
+  tornadoDeslocamentoX: 0,
+  tornadoDestinoX: 0,
+  alertaVisual: "normal" // "normal", "seguro", "perigo"
+};
+
 const gotasChuva3D = Array.from({ length: 140 }, () => ({
   x: (Math.random() - 0.5) * 900,
   y: Math.random() * 450,
@@ -209,7 +543,6 @@ function redimensionarCanvas3D() {
   notificarAlturaPortal();
 }
 
-// Converte coordenadas 3D (x, y, z) para 2D na tela com perspectiva
 function projetar3D(x, y, z) {
   const distanciaFocal = Math.min(larguraTela, alturaTela) * 0.85;
   const zSeguro = Math.max(20, z);
@@ -224,7 +557,6 @@ function projetar3D(x, y, z) {
   };
 }
 
-// Desenha um bloco 3D (cubo/paralelepípedo) com frente, lateral e topo
 function desenharCaixa3D(x, y, z, largura, altura, profundidade, corFrente, corLateral, corTopo) {
   const f1 = projetar3D(x, y, z);
   const f2 = projetar3D(x + largura, y, z);
@@ -236,7 +568,6 @@ function desenharCaixa3D(x, y, z, largura, altura, profundidade, corFrente, corL
   const t3 = projetar3D(x + largura, y + altura, z + profundidade);
   const t4 = projetar3D(x, y + altura, z + profundidade);
 
-  // Topo
   ctx.fillStyle = corTopo;
   ctx.beginPath();
   ctx.moveTo(f4.x, f4.y);
@@ -246,7 +577,6 @@ function desenharCaixa3D(x, y, z, largura, altura, profundidade, corFrente, corL
   ctx.closePath();
   ctx.fill();
 
-  // Lateral direita ou esquerda dependendo da posição em relação ao centro
   ctx.fillStyle = corLateral;
   ctx.beginPath();
   if (x + largura / 2 < 0) {
@@ -263,7 +593,6 @@ function desenharCaixa3D(x, y, z, largura, altura, profundidade, corFrente, corL
   ctx.closePath();
   ctx.fill();
 
-  // Face frontal
   ctx.fillStyle = corFrente;
   ctx.beginPath();
   ctx.moveTo(f1.x, f1.y);
@@ -274,22 +603,30 @@ function desenharCaixa3D(x, y, z, largura, altura, profundidade, corFrente, corL
   ctx.fill();
 }
 
-function desenharPersonagem3D(x, z, corRoupa, alturaCorpo, fase) {
+function desenharPersonagem3D(x, baseY, z, corRoupa, alturaCorpo, fase) {
   let offsetY = 0;
   let offsetX = 0;
+  let alturaAtual = alturaCorpo;
 
-  if (estadoAnimacaoPersonagens === "andando") {
-    offsetY = Math.abs(Math.sin(tempoAnimacao * 4 + fase)) * 5;
-  } else if (estadoAnimacaoPersonagens === "correndo") {
-    offsetY = Math.abs(Math.sin(tempoAnimacao * 9 + fase)) * 10;
-    offsetX = Math.sin(tempoAnimacao * 5 + fase) * 4;
-  } else if (estadoAnimacaoPersonagens === "tremendo") {
-    offsetX = Math.sin(tempoAnimacao * 28 + fase) * 3;
+  // Verifica se o personagem está caminhando até o destino escolhido
+  const distX = Math.abs(estado3D.destinoX - estado3D.grupoX);
+  const distZ = Math.abs(estado3D.destinoZ - estado3D.grupoZ);
+  const emDeslocamento = distX > 3 || distZ > 3;
+
+  if (emDeslocamento || estado3D.postura === "correndo") {
+    offsetY = Math.abs(Math.sin(tempoAnimacao * 10 + fase)) * 9;
+    offsetX = Math.sin(tempoAnimacao * 6 + fase) * 3;
+  } else if (estado3D.postura === "andando") {
+    offsetY = Math.abs(Math.sin(tempoAnimacao * 4 + fase)) * 4;
+  } else if (estado3D.postura === "tremendo") {
+    offsetX = Math.sin(tempoAnimacao * 30 + fase) * 3.5;
+  } else if (estado3D.postura === "agachado") {
+    alturaAtual = alturaCorpo * 0.55; // Agacha para proteger a cabeça
   }
 
-  // Sombra no chão 3D
-  const sombra = projetar3D(x + offsetX, -60, z);
-  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+  // Sombra no piso
+  const sombra = projetar3D(x + offsetX, baseY, z);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.38)";
   ctx.beginPath();
   ctx.ellipse(sombra.x, sombra.y, 12 * sombra.escala, 4 * sombra.escala, 0, 0, Math.PI * 2);
   ctx.fill();
@@ -297,10 +634,10 @@ function desenharPersonagem3D(x, z, corRoupa, alturaCorpo, fase) {
   // Corpo 3D
   desenharCaixa3D(
     x - 8 + offsetX,
-    -60 + offsetY,
+    baseY + offsetY,
     z - 6,
     16,
-    alturaCorpo,
+    alturaAtual,
     12,
     corRoupa,
     "#1e293b",
@@ -310,7 +647,7 @@ function desenharPersonagem3D(x, z, corRoupa, alturaCorpo, fase) {
   // Cabeça 3D
   desenharCaixa3D(
     x - 6 + offsetX,
-    -60 + alturaCorpo + 2 + offsetY,
+    baseY + alturaAtual + 2 + offsetY,
     z - 5,
     12,
     12,
@@ -327,7 +664,14 @@ function renderizarCena3D() {
     tempoAnimacao += 0.025;
   }
 
-  // Céu em degradê de tempestade
+  // Suaviza o movimento dos personagens e do tornado até o destino da escolha
+  const suavizacao = reduzAnimacao ? 1 : 0.07;
+  estado3D.grupoX += (estado3D.destinoX - estado3D.grupoX) * suavizacao;
+  estado3D.grupoZ += (estado3D.destinoZ - estado3D.grupoZ) * suavizacao;
+  estado3D.grupoY += (estado3D.destinoY - estado3D.grupoY) * suavizacao;
+  estado3D.tornadoDeslocamentoX += (estado3D.tornadoDestinoX - estado3D.tornadoDeslocamentoX) * suavizacao;
+
+  // Céu de tempestade
   const gradCeu = ctx.createLinearGradient(0, 0, 0, alturaTela * 0.52);
   gradCeu.addColorStop(0, "#020617");
   gradCeu.addColorStop(0.65, "#1e3a8a");
@@ -336,8 +680,8 @@ function renderizarCena3D() {
   ctx.fillRect(0, 0, larguraTela, alturaTela);
 
   // Flash de relâmpago
-  if (!reduzAnimacao && Math.random() < 0.006 && intensidadeRelampago <= 0) {
-    intensidadeRelampago = 0.75;
+  if (!reduzAnimacao && Math.random() < 0.005 && intensidadeRelampago <= 0) {
+    intensidadeRelampago = 0.7;
     tocarSom("trovao");
   }
   if (intensidadeRelampago > 0) {
@@ -346,7 +690,7 @@ function renderizarCena3D() {
     intensidadeRelampago = Math.max(0, intensidadeRelampago - 0.06);
   }
 
-  // Chão 3D com grade de perspectiva
+  // Chão 3D
   const horizonteY = alturaTela * 0.46;
   const gradChao = ctx.createLinearGradient(0, horizonteY, 0, alturaTela);
   gradChao.addColorStop(0, "#0f172a");
@@ -354,7 +698,7 @@ function renderizarCena3D() {
   ctx.fillStyle = gradChao;
   ctx.fillRect(0, horizonteY, larguraTela, alturaTela - horizonteY);
 
-  // Linhas de profundidade 3D no piso do pátio
+  // Linhas de perspectiva no piso
   ctx.strokeStyle = "rgba(148, 163, 184, 0.16)";
   ctx.lineWidth = 1;
   for (let gx = -600; gx <= 600; gx += 100) {
@@ -374,9 +718,9 @@ function renderizarCena3D() {
     ctx.stroke();
   }
 
-  // Tornado 3D girando no fundo (lado direito)
-  const tornadoBaseX = 175 + Math.sin(tempoAnimacao * 0.8) * 35;
-  const tornadoZ = 540;
+  // Tornado 3D (aproxima ou afasta conforme a escolha do jogador)
+  const tornadoBaseX = 185 - estado3D.tornadoDeslocamentoX + Math.sin(tempoAnimacao * 0.8) * 28;
+  const tornadoZ = 520 - estado3D.tornadoDeslocamentoX * 0.6;
   const camadasFunil = 18;
 
   for (let i = 0; i < camadasFunil; i++) {
@@ -392,7 +736,7 @@ function renderizarCena3D() {
     ctx.fill();
   }
 
-  // Destroços girando em órbita 3D ao redor do tornado
+  // Destroços girando no tornado
   destrocosTornado3D.forEach((d) => {
     if (!reduzAnimacao) {
       d.angulo += d.velocidade;
@@ -408,12 +752,19 @@ function renderizarCena3D() {
     ctx.fillRect(p.x, p.y, d.tamanho * p.escala, d.tamanho * p.escala);
   });
 
-  // Prédio 3D da Escola Vicente Rijo (lado esquerdo)
-  desenharCaixa3D(-290, -60, 340, 210, 125, 140, "#cbd5e1", "#94a3b8", "#e2e8f0");
-  // Telhado 3D
-  desenharCaixa3D(-300, 65, 330, 230, 18, 160, "#991b1b", "#7f1d1d", "#b91c1c");
+  // Verifica se os personagens entraram no corredor interno da escola
+  const personagensDentroDaEscola = estado3D.grupoX < -105 && estado3D.grupoZ > 342;
 
-  // Placa da escola na fachada 3D
+  // Prédio 3D da Escola Vicente Rijo (fica semi-transparente quando o grupo entra para você ver eles protegidos lá dentro!)
+  ctx.save();
+  if (personagensDentroDaEscola) {
+    ctx.globalAlpha = 0.52;
+  }
+  desenharCaixa3D(-290, -60, 340, 210, 125, 140, "#cbd5e1", "#94a3b8", "#e2e8f0");
+  desenharCaixa3D(-300, 65, 330, 230, 18, 160, "#991b1b", "#7f1d1d", "#b91c1c");
+  ctx.restore();
+
+  // Placa da Escola
   const placaPos = projetar3D(-185, 42, 338);
   ctx.fillStyle = "#1e3a8a";
   ctx.fillRect(placaPos.x - 68 * placaPos.escala, placaPos.y - 11 * placaPos.escala, 136 * placaPos.escala, 22 * placaPos.escala);
@@ -422,7 +773,7 @@ function renderizarCena3D() {
   ctx.textAlign = "center";
   ctx.fillText("ESCOLA VICENTE RIJO", placaPos.x, placaPos.y + 4 * placaPos.escala);
 
-  // Janelas iluminadas e porta na fachada 3D
+  // Janelas e Porta
   [-255, -195, -135].forEach((jx) => {
     const jp = projetar3D(jx, 5, 338);
     ctx.fillStyle = "#fef08a";
@@ -432,12 +783,37 @@ function renderizarCena3D() {
   ctx.fillStyle = "#78350f";
   ctx.fillRect(portaPos.x, portaPos.y, 28 * portaPos.escala, 38 * portaPos.escala);
 
-  // Personagens 3D animados no pátio perto da entrada
-  desenharPersonagem3D(-35, 290, "#dc2626", 32, 0);   // Professora
-  desenharPersonagem3D(-5, 305, "#2563eb", 26, 1.5);  // Aluno
-  desenharPersonagem3D(25, 295, "#16a34a", 26, 3.0);  // Aluna
+  // Se estiverem agachados no corredor interno, desenha uma mesa resistente 3D protegendo o grupo
+  if (personagensDentroDaEscola && estado3D.postura === "agachado") {
+    desenharCaixa3D(
+      estado3D.grupoX - 38,
+      -42,
+      estado3D.grupoZ - 14,
+      78,
+      5,
+      28,
+      "#92400e",
+      "#78350f",
+      "#b45309"
+    );
+  }
 
-  // Chuva 3D em perspectiva
+  // Personagens 3D na posição atual
+  desenharPersonagem3D(estado3D.grupoX - 18, estado3D.grupoY, estado3D.grupoZ, "#dc2626", 32, 0);
+  desenharPersonagem3D(estado3D.grupoX, estado3D.grupoY, estado3D.grupoZ + 6, "#2563eb", 26, 1.5);
+  desenharPersonagem3D(estado3D.grupoX + 18, estado3D.grupoY, estado3D.grupoZ + 2, "#16a34a", 26, 3.0);
+
+  // Aura visual de feedback no grupo (verde = seguro, vermelho = perigo)
+  if (estado3D.alertaVisual !== "normal") {
+    const auraPos = projetar3D(estado3D.grupoX, estado3D.grupoY + 15, estado3D.grupoZ);
+    ctx.strokeStyle = estado3D.alertaVisual === "seguro" ? "#22c55e" : "#ef4444";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(auraPos.x, auraPos.y, 38 * auraPos.escala, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // Chuva 3D
   ctx.strokeStyle = "rgba(191, 219, 254, 0.45)";
   ctx.lineWidth = 1.4;
   gotasChuva3D.forEach((gota) => {
@@ -566,6 +942,9 @@ function iniciarJogo() {
   tempoLimiteAtual = 12;
   inicioPartidaMs = Date.now();
 
+  estado3D.tornadoDeslocamentoX = 0;
+  estado3D.tornadoDestinoX = 0;
+
   telaInicio.classList.add("oculto");
   telaFinal.classList.add("oculto");
   telaJogo.classList.remove("oculto");
@@ -585,7 +964,13 @@ function carregarRodada() {
   textoHistoria.textContent = errosTempo > 0 ? dados.historiaDificil : dados.historia;
   textoPergunta.textContent = dados.pergunta;
 
-  estadoAnimacaoPersonagens = dados.cena;
+  // Posiciona os personagens 3D para o início da cena da rodada
+  estado3D.postura = dados.cena;
+  estado3D.destinoX = dados.alvoX;
+  estado3D.destinoZ = dados.alvoZ;
+  estado3D.destinoY = -60;
+  estado3D.alertaVisual = "normal";
+
   legendaCena.textContent = dados.legenda;
   tocarSom("passo");
 
@@ -647,6 +1032,17 @@ function escolherOpcao(indiceEscolhido) {
 
   const dados = RODADAS[rodadaAtual];
   const opcao = dados.opcoes[indiceEscolhido];
+  const acao = opcao.acao3D;
+
+  // Atualiza a cena 3D exatamente conforme a escolha do jogador!
+  estado3D.postura = acao.postura;
+  estado3D.destinoX = acao.alvoX;
+  estado3D.destinoZ = acao.alvoZ;
+  estado3D.destinoY = acao.subirAndar ? 25 : -60;
+  estado3D.tornadoDestinoX = Math.max(-140, Math.min(130, estado3D.tornadoDestinoX + acao.avancoTornado));
+  estado3D.alertaVisual = opcao.ideal ? "seguro" : "perigo";
+  legendaCena.textContent = acao.legenda;
+  tocarSom("passo");
 
   botoesOpcao.forEach((btn, idx) => {
     btn.disabled = true;
@@ -663,7 +1059,9 @@ function escolherOpcao(indiceEscolhido) {
     caixaFeedback.classList.add("sucesso");
     feedbackTitulo.textContent = "Excelente decisão! Você seguiu a Defesa Civil.";
   } else {
-    tocarSom("acerto");
+    tocarSom("erro");
+    intensidadeRelampago = 0.65;
+    tocarSom("trovao");
     caixaFeedback.classList.add("alerta");
     feedbackTitulo.textContent = "Você decidiu a tempo, mas veja o cuidado oficial:";
   }
@@ -681,6 +1079,12 @@ function tratarTempoEsgotado() {
   errosTempo++;
   contadorErros.textContent = `Erros: ${errosTempo}`;
   tempoLimiteAtual = Math.max(5, tempoLimiteAtual - 1.5);
+
+  // Personagens tremem parados e o tornado avança na tela 3D
+  estado3D.postura = "tremendo";
+  estado3D.tornadoDestinoX = Math.min(130, estado3D.tornadoDestinoX + 55);
+  estado3D.alertaVisual = "perigo";
+  legendaCena.textContent = "Vista 3D: Tempo esgotado! O grupo ficou paralisado e o tornado avançou!";
 
   tocarSom("erro");
   intensidadeRelampago = 0.85;
@@ -751,8 +1155,13 @@ function finalizarJogo() {
   document.getElementById("placar-erros").textContent = `${errosTempo}`;
   document.getElementById("placar-tempo").textContent = `${tempoTotalSeg}s`;
 
-  estadoAnimacaoPersonagens = "andando";
-  legendaCena.textContent = "Vista 3D: A tempestade passou e todos estão em segurança!";
+  estado3D.postura = "andando";
+  estado3D.destinoX = -25;
+  estado3D.destinoZ = 285;
+  estado3D.destinoY = -60;
+  estado3D.tornadoDestinoX = -150;
+  estado3D.alertaVisual = "seguro";
+  legendaCena.textContent = "Vista 3D: A tempestade se afastou e todos estão em segurança!";
   tocarSom("acerto");
 
   window.parent.postMessage(
