@@ -3,94 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tornado na Escola</title>
+  <title>Tornado na Escola - 3D</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app" class="container-jogo">
-    <!-- Barra superior com título, placar e botão de som -->
+  <!-- Fundo 3D em tela cheia -->
+  <canvas id="cena-3d" aria-label="Cenário 3D animado da Escola Vicente Rijo durante o tornado"></canvas>
+
+  <!-- Interface flutuante sobre o 3D -->
+  <div id="app" class="camada-interface">
+    <!-- Barra superior -->
     <header class="cabecalho">
       <div class="titulo-area">
         <h1>Tornado na Escola</h1>
-        <span id="badge-status" class="badge">Alerta Defesa Civil</span>
+        <span class="badge">Defesa Civil</span>
       </div>
       <div class="controles-topo">
         <span id="contador-rodada" class="info-topo" aria-live="polite">Início</span>
         <span id="contador-erros" class="info-topo" aria-live="polite">Erros: 0</span>
-        <button id="btn-som" class="btn-icone" type="button" aria-label="Alternar som" title="Ligar ou desligar som">
-          🔊 Som: Ligado
-        </button>
+        <button id="btn-som" class="btn-icone" type="button" title="Ligar ou desligar som">🔊 Som</button>
+        <button id="btn-tela-cheia" class="btn-icone" type="button" title="Alternar tela cheia">⛶ Tela Cheia</button>
       </div>
     </header>
 
-    <!-- Palco visual animado (chuva, relâmpagos, escola e personagens) -->
-    <section id="palco-animado" class="palco" aria-label="Cena animada da escola durante a tempestade">
-      <div id="flash-relampago" class="relampago"></div>
-      <div id="camada-chuva" class="chuva"></div>
-
-      <!-- Tornado animado girando no fundo -->
-      <div id="tornado" class="tornado" aria-hidden="true">
-        <div class="funil f1"></div>
-        <div class="funil f2"></div>
-        <div class="funil f3"></div>
-        <div class="funil f4"></div>
-      </div>
-
-      <!-- Prédio da Escola Vicente Rijo -->
-      <div class="escola" aria-hidden="true">
-        <div class="telhado"></div>
-        <div class="placa-escola">ESCOLA VICENTE RIJO</div>
-        <div class="janelas-linha">
-          <div class="janela"></div>
-          <div class="janela"></div>
-          <div class="janela"></div>
-        </div>
-        <div class="porta"></div>
-      </div>
-
-      <!-- Personagens 2D animados -->
-      <div id="grupo-personagens" class="personagens" aria-hidden="true">
-        <div id="pers-professora" class="personagem professora">
-          <div class="cabeca"></div>
-          <div class="corpo"></div>
-        </div>
-        <div id="pers-aluno" class="personagem aluno">
-          <div class="cabeca"></div>
-          <div class="corpo"></div>
-        </div>
-        <div id="pers-aluna" class="personagem aluna">
-          <div class="cabeca"></div>
-          <div class="corpo"></div>
-        </div>
-      </div>
-
-      <div id="legenda-cena" class="legenda-cena">
-        Nuvens escuras se aproximam da escola...
-      </div>
-    </section>
+    <!-- Legenda dinâmica da cena 3D -->
+    <div id="legenda-cena" class="legenda-flutuante">
+      Vista 3D: Nuvens escuras e um tornado se aproximam da Escola Vicente Rijo...
+    </div>
 
     <!-- Tela 1: Abertura -->
-    <main id="tela-inicio" class="cartao-conteudo">
-      <h2>Você sabe como agir se um tornado atingir a escola?</h2>
+    <main id="tela-inicio" class="painel-inferior">
+      <h2>Simulação 3D: Você sabe agir durante um tornado na escola?</h2>
       <p>
-        Acompanhe 10 momentos críticos dentro da Escola Vicente Rijo. Leia a situação e escolha a atitude mais segura seguindo as orientações da <strong>Defesa Civil</strong> antes que o tempo acabe!
+        Acompanhe 10 situações reais na <strong>Escola Vicente Rijo</strong>. Escolha a atitude segura da Defesa Civil antes que a barra de tempo acabe!
       </p>
-      <ul class="lista-regras">
-        <li>Escolha rápido antes da barra de tempo esgotar.</li>
-        <li>Se o tempo acabar, conta como erro e a próxima rodada fica mais rápida.</li>
-        <li>Mesmo errando, você segue na história até descobrir seu resultado final.</li>
-      </ul>
       <button id="btn-iniciar" class="btn-principal" type="button">
-        Começar Simulação
+        Começar Simulação 3D
       </button>
     </main>
 
-    <!-- Tela 2: Rodadas da História -->
-    <main id="tela-jogo" class="cartao-conteudo oculto">
-      <!-- Barra de tempo -->
+    <!-- Tela 2: Rodadas da História (escolhas embaixo) -->
+    <main id="tela-jogo" class="painel-inferior oculto">
       <div class="area-tempo">
         <div class="tempo-texto">
-          <span>Tempo para decidir:</span>
+          <span>Tempo restante:</span>
           <strong id="tempo-segundos">12.0s</strong>
         </div>
         <div class="barra-fundo" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
@@ -98,20 +54,17 @@
         </div>
       </div>
 
-      <!-- Texto da história e pergunta -->
       <article class="caixa-historia">
         <p id="texto-historia" class="historia"></p>
         <h2 id="texto-pergunta" class="pergunta"></h2>
       </article>
 
-      <!-- 3 Botões de escolha -->
       <div id="opcoes-container" class="lista-opcoes">
         <button class="btn-opcao" data-indice="0" type="button"></button>
         <button class="btn-opcao" data-indice="1" type="button"></button>
         <button class="btn-opcao" data-indice="2" type="button"></button>
       </div>
 
-      <!-- Caixa de feedback após resposta ou tempo esgotado -->
       <div id="caixa-feedback" class="feedback oculto" aria-live="polite">
         <strong id="feedback-titulo"></strong>
         <p id="feedback-explicacao"></p>
@@ -120,10 +73,14 @@
     </main>
 
     <!-- Tela 3: Resultado Final -->
-    <main id="tela-final" class="cartao-conteudo oculto">
-      <div class="selo-final" id="selo-final">🏆</div>
-      <h2 id="titulo-final">Resultado</h2>
-      <p id="descricao-final" class="descricao-final"></p>
+    <main id="tela-final" class="painel-inferior oculto">
+      <div class="cabecalho-final">
+        <span id="selo-final" class="selo-final">🏆</span>
+        <div>
+          <h2 id="titulo-final">Resultado</h2>
+          <p id="descricao-final" class="descricao-final"></p>
+        </div>
+      </div>
 
       <div class="resumo-placar">
         <div class="dado-placar">
@@ -141,8 +98,7 @@
       </div>
 
       <div class="dica-defesa-civil">
-        <strong>Resumo Oficial da Defesa Civil:</strong>
-        <p>Afaste-se de janelas e vidros, vá para um corredor ou sala interna no andar mais baixo e proteja a cabeça e o pescoço embaixo de uma mesa resistente.</p>
+        <strong>Regra Oficial da Defesa Civil:</strong> Longe de janelas e vidros, em local interno no andar mais baixo e protegido embaixo de algo resistente.
       </div>
 
       <button id="btn-reiniciar" class="btn-principal" type="button">Jogar Novamente</button>
