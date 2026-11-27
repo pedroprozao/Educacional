@@ -1,16 +1,16 @@
 {
-  "slug": "meu-jogo",
-  "title": "Nome do meu jogo",
-  "author": "Seu nome",
-  "authorClass": "Sua turma",
-  "discipline": "Matemática",
-  "grades": ["6º", "7º"],
-  "tags": ["palavra-chave", "outra-palavra"],
-  "description": "Uma frase curta que explica o que o jogo ensina.",
-  "instructions": "Como jogar, em uma ou duas frases.",
-  "duration": 5,
+  "slug": "tornado-na-escola",
+  "title": "Tornado na Escola",
+  "author": "Pedro",
+  "authorClass": "9º B",
+  "discipline": "Robótica",
+  "grades": ["9º ano"],
+  "tags": ["defesa civil", "tornado", "segurança na escola", "prevenção", "história interativa"],
+  "description": "História interativa de 10 rodadas na Escola Vicente Rijo para treinar decisões rápidas e seguras durante um tornado, seguindo as orientações oficiais da Defesa Civil.",
+  "instructions": "Leia cada situação e clique na atitude mais segura antes que a barra de tempo acabe. Se o tempo esgotar, conta como erro e a próxima rodada fica mais rápida.",
+  "duration": "2-4 min",
   "version": "1.0.0",
   "entry": "index.html",
   "cover": "cover.svg",
-  "createdAt": "2026-11-02"
+  "createdAt": "2026-11-27"
 }

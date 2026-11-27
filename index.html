@@ -1,48 +1,154 @@
-<!doctype html>
-<html lang="pt-BR" data-theme="light">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <title>Modelo de Jogo — Jogos VR</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="app">
-      <header class="top">
-        <div>
-          <span class="kicker">Modelo</span>
-          <h1 id="title">Clique no Alvo</h1>
-          <p class="subtitle">Troque este jogo pelo seu. O contrato já está pronto.</p>
-        </div>
-        <button id="restart" class="btn" type="button">Reiniciar</button>
-      </header>
-
-      <main>
-        <div class="hud">
-          <span class="pill">Alvos: <strong id="score">0</strong>/<span id="total">10</span></span>
-          <span class="pill">Tempo: <strong id="timer">0,0s</strong></span>
-        </div>
-
-        <div id="board" class="board" aria-label="Área do jogo">
-          <p id="start-hint" class="start-hint">Clique no alvo para começar</p>
-        </div>
-      </main>
-
-      <footer class="bottom">
-        <p>Este é o arquivo <code>game.js</code>. Leia os comentários e adapte.</p>
-      </footer>
-    </div>
-
-    <div id="result" class="overlay" hidden>
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
-        <div class="modal-icon" aria-hidden="true">🎯</div>
-        <h2 id="result-title">Muito bem!</h2>
-        <p id="result-text">Você concluiu o jogo.</p>
-        <button id="play-again" class="btn btn-primary full" type="button">Jogar de novo</button>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tornado na Escola</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="container-jogo">
+    <!-- Barra superior com título, placar e botão de som -->
+    <header class="cabecalho">
+      <div class="titulo-area">
+        <h1>Tornado na Escola</h1>
+        <span id="badge-status" class="badge">Alerta Defesa Civil</span>
       </div>
-    </div>
+      <div class="controles-topo">
+        <span id="contador-rodada" class="info-topo" aria-live="polite">Início</span>
+        <span id="contador-erros" class="info-topo" aria-live="polite">Erros: 0</span>
+        <button id="btn-som" class="btn-icone" type="button" aria-label="Alternar som" title="Ligar ou desligar som">
+          🔊 Som: Ligado
+        </button>
+      </div>
+    </header>
 
-    <script src="game.js"></script>
-  </body>
+    <!-- Palco visual animado (chuva, relâmpagos, escola e personagens) -->
+    <section id="palco-animado" class="palco" aria-label="Cena animada da escola durante a tempestade">
+      <div id="flash-relampago" class="relampago"></div>
+      <div id="camada-chuva" class="chuva"></div>
+
+      <!-- Tornado animado girando no fundo -->
+      <div id="tornado" class="tornado" aria-hidden="true">
+        <div class="funil f1"></div>
+        <div class="funil f2"></div>
+        <div class="funil f3"></div>
+        <div class="funil f4"></div>
+      </div>
+
+      <!-- Prédio da Escola Vicente Rijo -->
+      <div class="escola" aria-hidden="true">
+        <div class="telhado"></div>
+        <div class="placa-escola">ESCOLA VICENTE RIJO</div>
+        <div class="janelas-linha">
+          <div class="janela"></div>
+          <div class="janela"></div>
+          <div class="janela"></div>
+        </div>
+        <div class="porta"></div>
+      </div>
+
+      <!-- Personagens 2D animados -->
+      <div id="grupo-personagens" class="personagens" aria-hidden="true">
+        <div id="pers-professora" class="personagem professora">
+          <div class="cabeca"></div>
+          <div class="corpo"></div>
+        </div>
+        <div id="pers-aluno" class="personagem aluno">
+          <div class="cabeca"></div>
+          <div class="corpo"></div>
+        </div>
+        <div id="pers-aluna" class="personagem aluna">
+          <div class="cabeca"></div>
+          <div class="corpo"></div>
+        </div>
+      </div>
+
+      <div id="legenda-cena" class="legenda-cena">
+        Nuvens escuras se aproximam da escola...
+      </div>
+    </section>
+
+    <!-- Tela 1: Abertura -->
+    <main id="tela-inicio" class="cartao-conteudo">
+      <h2>Você sabe como agir se um tornado atingir a escola?</h2>
+      <p>
+        Acompanhe 10 momentos críticos dentro da Escola Vicente Rijo. Leia a situação e escolha a atitude mais segura seguindo as orientações da <strong>Defesa Civil</strong> antes que o tempo acabe!
+      </p>
+      <ul class="lista-regras">
+        <li>Escolha rápido antes da barra de tempo esgotar.</li>
+        <li>Se o tempo acabar, conta como erro e a próxima rodada fica mais rápida.</li>
+        <li>Mesmo errando, você segue na história até descobrir seu resultado final.</li>
+      </ul>
+      <button id="btn-iniciar" class="btn-principal" type="button">
+        Começar Simulação
+      </button>
+    </main>
+
+    <!-- Tela 2: Rodadas da História -->
+    <main id="tela-jogo" class="cartao-conteudo oculto">
+      <!-- Barra de tempo -->
+      <div class="area-tempo">
+        <div class="tempo-texto">
+          <span>Tempo para decidir:</span>
+          <strong id="tempo-segundos">12.0s</strong>
+        </div>
+        <div class="barra-fundo" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div id="barra-progresso" class="barra-preenchimento"></div>
+        </div>
+      </div>
+
+      <!-- Texto da história e pergunta -->
+      <article class="caixa-historia">
+        <p id="texto-historia" class="historia"></p>
+        <h2 id="texto-pergunta" class="pergunta"></h2>
+      </article>
+
+      <!-- 3 Botões de escolha -->
+      <div id="opcoes-container" class="lista-opcoes">
+        <button class="btn-opcao" data-indice="0" type="button"></button>
+        <button class="btn-opcao" data-indice="1" type="button"></button>
+        <button class="btn-opcao" data-indice="2" type="button"></button>
+      </div>
+
+      <!-- Caixa de feedback após resposta ou tempo esgotado -->
+      <div id="caixa-feedback" class="feedback oculto" aria-live="polite">
+        <strong id="feedback-titulo"></strong>
+        <p id="feedback-explicacao"></p>
+        <button id="btn-proximo" class="btn-principal" type="button">Continuar História</button>
+      </div>
+    </main>
+
+    <!-- Tela 3: Resultado Final -->
+    <main id="tela-final" class="cartao-conteudo oculto">
+      <div class="selo-final" id="selo-final">🏆</div>
+      <h2 id="titulo-final">Resultado</h2>
+      <p id="descricao-final" class="descricao-final"></p>
+
+      <div class="resumo-placar">
+        <div class="dado-placar">
+          <span>Pontuação</span>
+          <strong id="placar-pontos">0 / 100</strong>
+        </div>
+        <div class="dado-placar">
+          <span>Tempos Esgotados</span>
+          <strong id="placar-erros">0</strong>
+        </div>
+        <div class="dado-placar">
+          <span>Tempo Total</span>
+          <strong id="placar-tempo">0s</strong>
+        </div>
+      </div>
+
+      <div class="dica-defesa-civil">
+        <strong>Resumo Oficial da Defesa Civil:</strong>
+        <p>Afaste-se de janelas e vidros, vá para um corredor ou sala interna no andar mais baixo e proteja a cabeça e o pescoço embaixo de uma mesa resistente.</p>
+      </div>
+
+      <button id="btn-reiniciar" class="btn-principal" type="button">Jogar Novamente</button>
+    </main>
+  </div>
+
+  <script src="game.js"></script>
+</body>
 </html>
